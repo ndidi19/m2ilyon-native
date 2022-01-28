@@ -1,14 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image } from 'react-native';
+import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 
 const HomeScreen = (props) => {
-    console.log(props);
+    
+    const [user, setUser] = useState({});
+
+    useEffect(() => {
+        useAsyncStorage('userInfos').getItem()
+            .then(userInfos => {
+                console.log("userInfos from storage : ",userInfos);
+                setUser(JSON.parse(userInfos));
+            })
+    }, [])
     return (
         <View style={styles.container}>
             <Image style={{width: 150, height: 150, borderRadius: 75, marginBottom: 20}}
-            source={{uri: props.route.params.picture}} />
-            <Text style={styles.text}>Welcome {props.route.params.firstname} {props.route.params.lastname} !</Text>
-            <Text style={styles.text}>You're connected with email : {props.route.params.email}</Text>
+            source={{uri: user.picture}} />
+            <Text style={styles.text}>Welcome {user.firstname} {user.lastname} !</Text>
+            <Text style={styles.text}>You're connected with email : {user.email}</Text>
         </View>
     )
 }
@@ -23,6 +33,9 @@ const styles = StyleSheet.create({
       backgroundColor: 'black',
     },
     text: {
-        color: '#fff'
+        color: '#fff',
+        fontFamily: "Supermercado",
+        fontSize: 20,
+        textAlign: 'center'
       }
   })
